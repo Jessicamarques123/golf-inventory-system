@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Titleist GT4 Driver",
+    "quantity": 10,
+    "price": 899.0
+  },
+  {
+    "id": 2,
+    "name": "Pro V1x Golf Ball",
+    "quantity": 50,
+    "price": 54.95
+  },
+  {
+    "id": 3,
+    "name": "Players 4 Stand bag",
+    "quantity": 15,
+    "price": 275.95
+  },
+  {
+    "id": 4,
+    "name": "Titleist GT3 Hybrid",
+    "quantity": 5,
+    "price": 359.0
+  },
+  {
+    "name": "Golf Glove",
+    "quantity": 15,
+    "price": 35.95,
+    "id": 5
+  }
+]
