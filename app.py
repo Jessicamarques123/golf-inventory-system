@@ -45,20 +45,41 @@ def update_product(product_id):
     updated_data = request.get_json()
 
     # validation
-    if "price" in updated_data and not isinstance(updated_data["price"], (int, float)):
-        return jsonify({"error": "Must to be number."}), 400
-    if "quantity" in updated_data and updated_data["quantity"] < 0:
-        return jsonify({"error": "Must be positive number"}), 400
+    if "price" in updated_data:
+        price = updated_data["price"]
+        if type(price) not in [int, float]:
+            return jsonify({"error": "Price must be a number."}), 400
+        if price < 0:
+            return jsonify({"error": "Price cannot be negative."}), 400
 
+
+    if "quantity" in updated_data:
+        quantity = updated_data["quantity"]
+        if type(quantity) != int:
+            return jsonify({"error": "Quantity must be a full number."}), 400
+        if quantity < 0:
+            return jsonify({"error": "Quantity must be positive."}), 400
+
+    # Find and update
     for product in inventory:
         if product["id"] == product_id:
             product.update(updated_data)
             save_inventory(inventory)
             return jsonify(product)
 
+    
     return jsonify({"error": "Product not found."}), 404
 
+#Delete per ID
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_product(product_id):
+    inventory = load_inventory()
+    new_inventory =[p for p in inventory if p ["id"] != product_id]
 
+    if len(new_inventory) == len(inventory):
+        return jsonify({"error":"Product not found"}), 404
+    save_inventory(new_inventory)
+    return jsonify({"message":"product deleted successfully"})
 
 # Start the Flask sever
 if __name__ == '__main__':
