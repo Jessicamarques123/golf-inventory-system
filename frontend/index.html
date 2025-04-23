@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product List</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: rgb(7, 127, 53);
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: rgb(56, 231, 17);
+    }
+
+    #product-list {
+      margin-top: 20px;
+    }
+
+    .product {
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Add Product</h1>
+
+  <label for="name">Name:</label>
+  <input type="text" id="name">
+
+  <label for="category">Category:</label>
+  <input type="text" id="category">
+
+  <label for="price">Price:</label>
+  <input type="number" id="price">
+
+  <label for="stock">Stock:</label>
+  <input type="number" id="stock">
+
+  <button id="add-product">Add Product</button>
+
+  <h2>Product List</h2>
+  <div id="product-list">
+    <!-- Product list will be displayed here -->
+  </div>
+
+  <!-- Link to app.js -->
+  <script src="app.js"></script>
+
+</body>
+</html>
