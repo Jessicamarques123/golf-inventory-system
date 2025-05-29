@@ -4,23 +4,31 @@ const priceInput = document.getElementById('price');
 const stockInput = document.getElementById('stock');
 const addButton = document.getElementById('add-product');
 const productList = document.getElementById('product-list');
-const feedbackMessage = document.getElementById('feedback-message');  // Novo elemento para feedback
+const feedbackMessage = document.getElementById('feedback-message');
 
-// Function to fetch products from backend
+// Função para buscar os produtos do backend
 function fetchProducts() {
-  fetch('http://localhost:3000/products')  // ✅ URL corrigida
+  fetch('http://localhost:3000/products')
     .then(response => response.json())
     .then(products => {
-      productList.innerHTML = '';  // Limpa a lista antes de adicionar novos produtos
+      productList.innerHTML = ''; // Limpa a lista
+
       products.forEach(product => {
-        const productDiv = document.createElement('div');
-        productDiv.className = 'product';
-        productDiv.id = `product-${product.id}`;
-        productDiv.innerHTML = `
-          Name: ${product.name} | Price: €${product.price} | Stock: ${product.quantity}
-          <button onclick="deleteProduct(${product.id})">Delete</button>
+        const row = document.createElement('tr');
+        row.id = `product-${product.id}`;
+
+        row.innerHTML = `
+          <td>${product.name}</td>
+          <td>${product.category || '-'}</td>
+          <td>€${product.price.toFixed(2)}</td>
+          <td>${product.quantity}</td>
+          <td>
+            <button onclick="deleteProduct(${product.id})" class="btn-delete btn-sm">Delete</button>
+            <button onclick="editProduct(${product.id})" class="btn-edit btn-sm">Edit</button>
+          </td>
         `;
-        productList.appendChild(productDiv);
+
+        productList.appendChild(row);
       });
     })
     .catch(error => {
@@ -29,14 +37,13 @@ function fetchProducts() {
     });
 }
 
-// Function to add a new product
+// Função para adicionar novo produto
 function addProduct() {
   const name = nameInput.value;
   const category = categoryInput.value;
   const price = parseFloat(priceInput.value);
   const stock = parseInt(stockInput.value);
 
-  // Validar se os campos estão preenchidos
   if (!name || !category || isNaN(price) || isNaN(stock)) {
     showFeedback('Please fill all the fields!', 'error');
     return;
@@ -49,8 +56,7 @@ function addProduct() {
     quantity: stock
   };
 
-  // Enviar o novo produto para o backend
-  fetch('http://localhost:3000/products', {  // ✅ URL corrigida
+  fetch('http://localhost:3000/products', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -59,9 +65,9 @@ function addProduct() {
   })
     .then(response => response.json())
     .then(() => {
-      fetchProducts();  // Atualiza a lista de produtos
+      fetchProducts();
       showFeedback('Product added successfully!', 'success');
-      clearFields();  // Limpa os campos após adicionar
+      clearFields();
     })
     .catch(error => {
       console.error('Error adding product:', error);
@@ -69,14 +75,14 @@ function addProduct() {
     });
 }
 
-// Function to delete a product (frontend only)
+// Função para deletar produto
 function deleteProduct(productId) {
   fetch(`http://localhost:3000/products/${productId}`, {
     method: 'DELETE'
   })
     .then(response => {
       if (response.ok) {
-        fetchProducts(); // Atualiza a lista após a exclusão
+        fetchProducts();
       } else {
         alert('Failed to delete product.');
       }
@@ -84,7 +90,12 @@ function deleteProduct(productId) {
     .catch(error => console.error('Error deleting product:', error));
 }
 
-// Função para limpar os campos de entrada
+// (Opcional) Função para edição futura
+function editProduct(productId) {
+  alert(`Edit feature coming soon for product ID: ${productId}`);
+}
+
+// Limpa os campos do formulário
 function clearFields() {
   nameInput.value = '';
   categoryInput.value = '';
@@ -92,17 +103,15 @@ function clearFields() {
   stockInput.value = '';
 }
 
-// Função para exibir mensagens de feedback (sucesso/erro)
+// Mostra feedback na tela
 function showFeedback(message, type) {
   feedbackMessage.textContent = message;
   feedbackMessage.style.color = type === 'success' ? 'green' : 'red';
   setTimeout(() => {
-    feedbackMessage.textContent = '';  // Limpa a mensagem após 3 segundos
+    feedbackMessage.textContent = '';
   }, 3000);
 }
 
-// Carregar produtos quando a página carregar
+// Inicialização
 window.onload = fetchProducts;
-
-// Evento de clique no botão "Adicionar"
 addButton.addEventListener('click', addProduct);

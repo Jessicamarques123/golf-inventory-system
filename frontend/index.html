@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Product List</title>
   <style>
     body {
@@ -11,7 +11,7 @@
       background-color: #f9f9f9;
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
     }
 
@@ -29,7 +29,7 @@
 
     button {
       padding: 10px;
-      background-color: rgb(7, 127, 53);
+      background-color: #428544;
       color: white;
       border: none;
       cursor: pointer;
@@ -37,18 +37,55 @@
     }
 
     button:hover {
-      background-color: rgb(56, 231, 17);
+      background-color: rgb(97, 113, 94);
     }
 
-    #product-list {
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 20px;
+      background-color: #fff;
     }
 
-    .product {
-      background-color: #fff;
-      padding: 10px;
-      margin-bottom: 10px;
+    th, td {
       border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+
+    .btn-delete {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      background-color: #2E7D32;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .btn-delete:hover {
+      background-color: #3c5c53;
+    }
+
+    .btn-edit:hover {
+      background-color: #3c5c53;
+    }
+
+    #feedback-message {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -57,28 +94,37 @@
   <h1>Add Product</h1>
 
   <label for="name">Name:</label>
-  <input type="text" id="name">
+  <input type="text" id="name" />
 
   <label for="category">Category:</label>
-  <input type="text" id="category">
+  <input type="text" id="category" />
 
   <label for="price">Price:</label>
-  <input type="number" id="price">
+  <input type="number" id="price" />
 
   <label for="stock">Stock:</label>
-  <input type="number" id="stock">
+  <input type="number" id="stock" />
 
   <button id="add-product">Add Product</button>
 
   <h2>Product List</h2>
-  <div id="product-list">
-    <!-- Product list will be displayed here -->
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price (€)</th>
+        <th>Stock</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="product-list">
+      <!-- Products will be dynamically inserted here via JS -->
+    </tbody>
+  </table>
 
   <div id="feedback-message"></div>
 
-  <!-- Link to app.js -->
   <script src="app.js"></script>
-
 </body>
 </html>
