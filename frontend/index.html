@@ -34,10 +34,11 @@
       border: none;
       cursor: pointer;
       width: 100%;
+      margin-bottom: 10px;
     }
 
     button:hover {
-      background-color: rgb(97, 113, 94);
+      background-color: #3c5c53;
     }
 
     table {
@@ -74,11 +75,7 @@
       cursor: pointer;
     }
 
-    .btn-delete:hover {
-      background-color: #3c5c53;
-    }
-
-    .btn-edit:hover {
+    .btn-delete:hover, .btn-edit:hover {
       background-color: #3c5c53;
     }
 
@@ -106,6 +103,7 @@
   <input type="number" id="stock" />
 
   <button id="add-product">Add Product</button>
+  <button id="update-product" style="display: none;">Update Product</button>
 
   <h2>Product List</h2>
   <table>
@@ -119,7 +117,7 @@
       </tr>
     </thead>
     <tbody id="product-list">
-      <!-- Products will be dynamically inserted here via JS -->
+     
     </tbody>
   </table>
 

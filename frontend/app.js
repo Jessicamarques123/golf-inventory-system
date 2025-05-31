@@ -3,115 +3,160 @@ const categoryInput = document.getElementById('category');
 const priceInput = document.getElementById('price');
 const stockInput = document.getElementById('stock');
 const addButton = document.getElementById('add-product');
+const updateButton = document.getElementById('update-product');
 const productList = document.getElementById('product-list');
 const feedbackMessage = document.getElementById('feedback-message');
 
-// Função para buscar os produtos do backend
+let editProductId = null;
+
 function fetchProducts() {
   fetch('http://localhost:3000/products')
     .then(response => response.json())
     .then(products => {
-      productList.innerHTML = ''; // Limpa a lista
-
+      productList.innerHTML = '';
       products.forEach(product => {
         const row = document.createElement('tr');
-        row.id = `product-${product.id}`;
-
         row.innerHTML = `
           <td>${product.name}</td>
           <td>${product.category || '-'}</td>
           <td>€${product.price.toFixed(2)}</td>
           <td>${product.quantity}</td>
           <td>
-            <button onclick="deleteProduct(${product.id})" class="btn-delete btn-sm">Delete</button>
-            <button onclick="editProduct(${product.id})" class="btn-edit btn-sm">Edit</button>
+            <button onclick="editProduct(${product.id})" class="btn-edit">Edit</button>
+            <button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>
           </td>
         `;
-
         productList.appendChild(row);
       });
     })
-    .catch(error => {
-      console.error('Error fetching products:', error);
-      showFeedback('Error fetching products. Please try again.', 'error');
+    .catch(() => showFeedback('Error loading products.', 'error'));
+}
+
+function addProduct() {
+  const product = getFormData();
+  if (!product) return;
+
+  fetch('http://localhost:3000/products', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(product)
+  })
+    .then(res => res.json())
+    .then(() => {
+      fetchProducts();
+      showFeedback('Product added successfully!', 'success');
+      clearForm();
+    })
+    .catch(() => showFeedback('Error adding product.', 'error'));
+}
+
+function updateProduct() {
+  if (!editProductId) {
+    showFeedback('No product selected for update.', 'error');
+    return;
+  }
+
+  const product = getFormData();
+  if (!product) return;
+
+  console.log('🟡 Updating product with ID:', editProductId);
+  console.log('📦 Product data:', product);
+
+  fetch(`http://localhost:3000/products/${editProductId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(product)
+  })
+    .then(async res => {
+      const text = await res.text();
+      if (!res.ok) {
+        console.error(`❌ Failed to update. Status ${res.status}`, text);
+        showFeedback('Error updating product. Server response: ' + text, 'error');
+        throw new Error(text);
+      }
+      console.log('✅ Update response:', text);
+      return JSON.parse(text);
+    })
+    .then(() => {
+      fetchProducts();
+      showFeedback('Product updated successfully!', 'success');
+      clearForm();
+    })
+    .catch(err => {
+      console.error('🛑 Update error:', err.message);
     });
 }
 
-// Função para adicionar novo produto
-function addProduct() {
-  const name = nameInput.value;
-  const category = categoryInput.value;
+function deleteProduct(id) {
+  fetch(`http://localhost:3000/products/${id}`, {
+    method: 'DELETE'
+  })
+    .then(() => {
+      fetchProducts();
+      showFeedback('Product deleted.', 'success');
+    })
+    .catch(() => showFeedback('Error deleting product.', 'error'));
+}
+
+function editProduct(id) {
+  fetch('http://localhost:3000/products')
+    .then(res => res.json())
+    .then(products => {
+      const product = products.find(p => p.id === id);
+      if (!product) {
+        showFeedback('Product not found for editing.', 'error');
+        return;
+      }
+
+      nameInput.value = product.name;
+      categoryInput.value = product.category;
+      priceInput.value = product.price;
+      stockInput.value = product.quantity;
+
+      editProductId = parseInt(product.id); // garante número
+      addButton.style.display = 'none';
+      updateButton.style.display = 'inline-block';
+
+      showFeedback('Editing product...', 'success');
+    });
+}
+
+function getFormData() {
+  const name = nameInput.value.trim();
+  const category = categoryInput.value.trim();
   const price = parseFloat(priceInput.value);
   const stock = parseInt(stockInput.value);
 
   if (!name || !category || isNaN(price) || isNaN(stock)) {
-    showFeedback('Please fill all the fields!', 'error');
-    return;
+    showFeedback('Please fill all fields.', 'error');
+    return null;
   }
 
-  const newProduct = {
-    name: name,
-    category: category,
-    price: price,
+  return {
+    name,
+    category,
+    price,
     quantity: stock
   };
-
-  fetch('http://localhost:3000/products', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(newProduct)
-  })
-    .then(response => response.json())
-    .then(() => {
-      fetchProducts();
-      showFeedback('Product added successfully!', 'success');
-      clearFields();
-    })
-    .catch(error => {
-      console.error('Error adding product:', error);
-      showFeedback('Error adding product. Please try again.', 'error');
-    });
 }
 
-// Função para deletar produto
-function deleteProduct(productId) {
-  fetch(`http://localhost:3000/products/${productId}`, {
-    method: 'DELETE'
-  })
-    .then(response => {
-      if (response.ok) {
-        fetchProducts();
-      } else {
-        alert('Failed to delete product.');
-      }
-    })
-    .catch(error => console.error('Error deleting product:', error));
-}
-
-// (Opcional) Função para edição futura
-function editProduct(productId) {
-  alert(`Edit feature coming soon for product ID: ${productId}`);
-}
-
-// Limpa os campos do formulário
-function clearFields() {
+function clearForm() {
   nameInput.value = '';
   categoryInput.value = '';
   priceInput.value = '';
   stockInput.value = '';
+  editProductId = null;
+  addButton.style.display = 'inline-block';
+  updateButton.style.display = 'none';
 }
 
-// Mostra feedback na tela
 function showFeedback(message, type) {
   feedbackMessage.textContent = message;
   feedbackMessage.style.color = type === 'success' ? 'green' : 'red';
-  setTimeout(() => {
-    feedbackMessage.textContent = '';
-  }, 3000);
+  setTimeout(() => feedbackMessage.textContent = '', 4000);
 }
 
-// Inicialização
-window.onload = fetchProducts;
 addButton.addEventListener('click', addProduct);
+updateButton.addEventListener('click', updateProduct);
+window.onload = fetchProducts;
+
