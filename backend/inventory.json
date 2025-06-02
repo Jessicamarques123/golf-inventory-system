@@ -17,14 +17,21 @@
     "name": "Golf Glove",
     "category": "Aces",
     "price": 15,
-    "quantity": -5,
+    "quantity": 5,
     "id": 1748553638300
   },
   {
-    "name": "DGS",
-    "category": "SGSFG",
-    "price": 112,
-    "quantity": 22,
-    "id": 1748708372903
+    "name": "Titleist GT2 Fairway",
+    "category": "Club",
+    "price": 295,
+    "quantity": 4,
+    "id": 1748892104759
+  },
+  {
+    "name": "Cobra Putter",
+    "category": "Club",
+    "price": 250,
+    "quantity": 5,
+    "id": 1748892429766
   }
 ]

@@ -1,11 +1,14 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.get('/', (req, res) => res.redirect('/login.html'));
 
 const DATA_FILE = './inventory.json';
 
@@ -76,6 +79,11 @@ app.put('/products/:id', (req, res) => {
   saveInventory(products);
   console.log(`Product ID ${id} updated successfully`);
   res.json(products[index]);
+});
+
+//  para login.html
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
 });
 
 // Inicia o servidor

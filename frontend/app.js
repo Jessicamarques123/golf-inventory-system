@@ -7,6 +7,13 @@ const updateButton = document.getElementById('update-product');
 const productList = document.getElementById('product-list');
 const feedbackMessage = document.getElementById('feedback-message');
 
+// Redirect if not logged in
+if (localStorage.getItem('loggedIn') !== 'true') {
+  window.location.href = 'login.html';
+}
+
+
+
 let editProductId = null;
 
 function fetchProducts() {
@@ -59,8 +66,8 @@ function updateProduct() {
   const product = getFormData();
   if (!product) return;
 
-  console.log('🟡 Updating product with ID:', editProductId);
-  console.log('📦 Product data:', product);
+  console.log(' Updating product with ID:', editProductId);
+  console.log(' Product data:', product);
 
   fetch(`http://localhost:3000/products/${editProductId}`, {
     method: 'PUT',
@@ -70,11 +77,11 @@ function updateProduct() {
     .then(async res => {
       const text = await res.text();
       if (!res.ok) {
-        console.error(`❌ Failed to update. Status ${res.status}`, text);
+        console.error(` Failed to update. Status ${res.status}`, text);
         showFeedback('Error updating product. Server response: ' + text, 'error');
         throw new Error(text);
       }
-      console.log('✅ Update response:', text);
+      console.log(' Update response:', text);
       return JSON.parse(text);
     })
     .then(() => {
@@ -83,7 +90,7 @@ function updateProduct() {
       clearForm();
     })
     .catch(err => {
-      console.error('🛑 Update error:', err.message);
+      console.error(' Update error:', err.message);
     });
 }
 
@@ -160,3 +167,7 @@ addButton.addEventListener('click', addProduct);
 updateButton.addEventListener('click', updateProduct);
 window.onload = fetchProducts;
 
+function logout() {
+  localStorage.removeItem('loggedIn');
+  window.location.href = 'login.html';
+}
