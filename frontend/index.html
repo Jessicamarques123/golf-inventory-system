@@ -81,14 +81,45 @@
 
     #feedback-message {
       text-align: center;
-      margin-top: 10px;
       font-weight: bold;
+      margin-bottom: 10px;
+      color: red;
+    }
+
+    .link-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .link-container a {
+      color: #428544;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .link-container a:hover {
+      text-decoration: underline;
+    }
+
+    #search {
+      padding: 8px;
+      width: 100%;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
 
+  <div class="link-container" id="sales-link" style="display: none;">
+    <a href="sales.html">→ Go to Sales Page</a>
+  </div>
+
   <h1>Add Product</h1>
+
+  <label for="code">Product Code:</label>
+  <input type="text" id="code" />
 
   <label for="name">Name:</label>
   <input type="text" id="name" />
@@ -105,10 +136,16 @@
   <button id="add-product">Add Product</button>
   <button id="update-product" style="display: none;">Update Product</button>
 
+  <div id="feedback-message"></div>
+
   <h2>Product List</h2>
+
+  <input type="text" id="search" placeholder="Search by name or code..." />
+
   <table>
     <thead>
       <tr>
+        <th>Code</th>
         <th>Name</th>
         <th>Category</th>
         <th>Price (€)</th>
@@ -117,12 +154,54 @@
       </tr>
     </thead>
     <tbody id="product-list">
-     
+      <!-- Items added by JS -->
     </tbody>
   </table>
 
-  <div id="feedback-message"></div>
-<button onclick="logout()">Logout</button>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+
+    const role = localStorage.getItem('role');
+
+    if (role !== 'admin') {
+      window.location.href = 'sales.html';
+    } else {
+      document.getElementById('sales-link').style.display = 'block';
+    }
+
+    if (role === 'staff') {
+      window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('add-product').style.display = 'none';
+        document.getElementById('update-product').style.display = 'none';
+
+        const observer = new MutationObserver(() => {
+          document.querySelectorAll('.btn-edit, .btn-delete').forEach(btn => {
+            btn.style.display = 'none';
+          });
+        });
+
+        observer.observe(document.getElementById('product-list'), {
+          childList: true,
+          subtree: true
+        });
+      });
+    }
+
+    // SEARCH FUNCTIONALITY
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase();
+      document.querySelectorAll('#product-list tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  </script>
 
   <script src="app.js"></script>
 </body>

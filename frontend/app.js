@@ -1,3 +1,4 @@
+const codeInput = document.getElementById('code');
 const nameInput = document.getElementById('name');
 const categoryInput = document.getElementById('category');
 const priceInput = document.getElementById('price');
@@ -12,8 +13,6 @@ if (localStorage.getItem('loggedIn') !== 'true') {
   window.location.href = 'login.html';
 }
 
-
-
 let editProductId = null;
 
 function fetchProducts() {
@@ -24,6 +23,7 @@ function fetchProducts() {
       products.forEach(product => {
         const row = document.createElement('tr');
         row.innerHTML = `
+          <td>${product.code || '-'}</td>
           <td>${product.name}</td>
           <td>${product.category || '-'}</td>
           <td>€${product.price.toFixed(2)}</td>
@@ -48,13 +48,20 @@ function addProduct() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(product)
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        return res.json().then(data => {
+          throw new Error(data.error || 'Error adding product.');
+        });
+      }
+      return res.json();
+    })
     .then(() => {
       fetchProducts();
       showFeedback('Product added successfully!', 'success');
       clearForm();
     })
-    .catch(() => showFeedback('Error adding product.', 'error'));
+    .catch(err => showFeedback(err.message, 'error'));
 }
 
 function updateProduct() {
@@ -66,9 +73,6 @@ function updateProduct() {
   const product = getFormData();
   if (!product) return;
 
-  console.log(' Updating product with ID:', editProductId);
-  console.log(' Product data:', product);
-
   fetch(`http://localhost:3000/products/${editProductId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -77,11 +81,9 @@ function updateProduct() {
     .then(async res => {
       const text = await res.text();
       if (!res.ok) {
-        console.error(` Failed to update. Status ${res.status}`, text);
         showFeedback('Error updating product. Server response: ' + text, 'error');
         throw new Error(text);
       }
-      console.log(' Update response:', text);
       return JSON.parse(text);
     })
     .then(() => {
@@ -90,7 +92,7 @@ function updateProduct() {
       clearForm();
     })
     .catch(err => {
-      console.error(' Update error:', err.message);
+      console.error('Update error:', err.message);
     });
 }
 
@@ -115,12 +117,13 @@ function editProduct(id) {
         return;
       }
 
+      codeInput.value = product.code || '';
       nameInput.value = product.name;
       categoryInput.value = product.category;
       priceInput.value = product.price;
       stockInput.value = product.quantity;
 
-      editProductId = parseInt(product.id); // garante número
+      editProductId = parseInt(product.id);
       addButton.style.display = 'none';
       updateButton.style.display = 'inline-block';
 
@@ -129,17 +132,19 @@ function editProduct(id) {
 }
 
 function getFormData() {
+  const code = codeInput.value.trim();
   const name = nameInput.value.trim();
   const category = categoryInput.value.trim();
   const price = parseFloat(priceInput.value);
   const stock = parseInt(stockInput.value);
 
-  if (!name || !category || isNaN(price) || isNaN(stock)) {
+  if (!code || !name || !category || isNaN(price) || isNaN(stock)) {
     showFeedback('Please fill all fields.', 'error');
     return null;
   }
 
   return {
+    code,
     name,
     category,
     price,
@@ -148,6 +153,7 @@ function getFormData() {
 }
 
 function clearForm() {
+  codeInput.value = '';
   nameInput.value = '';
   categoryInput.value = '';
   priceInput.value = '';

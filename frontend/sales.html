@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales - Golf Store</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    a {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #428544;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    input[readonly] {
+      background-color: #e9e9e9;
+      color: #555;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #428544;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #3c5c53;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f1f1;
+    }
+
+    .btn-action {
+      padding: 5px 10px;
+      background-color: #2E7D32;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-action:hover {
+      background-color: #3c5c53;
+    }
+
+    #feedback {
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #total, #change {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .top-bar a, .top-bar button {
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" id="back-link">← Back to Product List</a>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <h1>Register Sale</h1>
+
+  <label for="code">Product Code:</label>
+  <input type="text" id="code" placeholder="Enter product code and press Enter" />
+
+  <label for="name">Name:</label>
+  <input type="text" id="name" readonly />
+
+  <label for="category">Category:</label>
+  <input type="text" id="category" readonly />
+
+  <label for="price">Price:</label>
+  <input type="text" id="price" readonly />
+
+  <label for="stock">Stock:</label>
+  <input type="text" id="stock" readonly />
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" min="1" />
+
+  <button onclick="addToCart()">Add to Cart</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="cart-body"></tbody>
+  </table>
+
+  <div id="total"></div>
+
+  <label for="payment-method">Payment Method:</label>
+  <select id="payment-method" onchange="toggleCashFields()">
+    <option value="card">Card</option>
+    <option value="cash">Cash</option>
+  </select>
+
+  <div id="cash-fields" style="display: none;">
+    <label for="cash-given">Cash Given:</label>
+    <input type="number" id="cash-given" min="0" oninput="calculateChange()" />
+    <div id="change"></div>
+  </div>
+
+  <button onclick="submitCart()">Submit Sale</button>
+
+  <div id="feedback"></div>
+
+  <script>
+    let currentProduct = null;
+    let cart = [];
+    let total = 0;
+
+    const role = localStorage.getItem('role');
+    if (role === 'staff') {
+      document.getElementById('back-link').style.display = 'none';
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+
+    document.getElementById('code').addEventListener('keydown', async function (e) {
+      if (e.key === 'Enter') {
+        const code = e.target.value.trim();
+        if (!code) return;
+
+        try {
+          const res = await fetch('http://localhost:3000/products');
+          const products = await res.json();
+          const product = products.find(p => p.code === code);
+
+          if (product) {
+            currentProduct = product;
+            document.getElementById('name').value = product.name;
+            document.getElementById('category').value = product.category;
+            document.getElementById('price').value = product.price.toFixed(2);
+            document.getElementById('stock').value = product.quantity;
+            document.getElementById('feedback').textContent = '';
+          } else {
+            clearInputs();
+            document.getElementById('feedback').textContent = 'Product not found.';
+          }
+        } catch (err) {
+          document.getElementById('feedback').textContent = 'Error loading products.';
+        }
+      }
+    });
+
+    function addToCart() {
+      const quantity = parseInt(document.getElementById('quantity').value);
+      if (!currentProduct || !quantity || quantity <= 0) return;
+
+      cart.push({
+        ...currentProduct,
+        quantity,
+        subtotal: currentProduct.price * quantity
+      });
+
+      renderCart();
+      clearInputs();
+    }
+
+    function renderCart() {
+      const tbody = document.getElementById('cart-body');
+      const totalDiv = document.getElementById('total');
+      tbody.innerHTML = '';
+
+      total = 0;
+      cart.forEach((item, index) => {
+        total += item.subtotal;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.code}</td>
+          <td>${item.name}</td>
+          <td>${item.category}</td>
+          <td>${item.price.toFixed(2)}</td>
+          <td>${item.quantity}</td>
+          <td>${(item.subtotal).toFixed(2)}</td>
+          <td><button class="btn-action" onclick="removeItem(${index})">Remove</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+      totalDiv.textContent = 'Total: €' + total.toFixed(2);
+      calculateChange();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function toggleCashFields() {
+      const method = document.getElementById('payment-method').value;
+      const cashFields = document.getElementById('cash-fields');
+      cashFields.style.display = method === 'cash' ? 'block' : 'none';
+    }
+
+    function calculateChange() {
+      const method = document.getElementById('payment-method').value;
+      if (method !== 'cash') return;
+
+      const cashGiven = parseFloat(document.getElementById('cash-given').value);
+      const changeDiv = document.getElementById('change');
+
+      if (!isNaN(cashGiven) && cashGiven >= total) {
+        const change = cashGiven - total;
+        changeDiv.textContent = 'Change: €' + change.toFixed(2);
+      } else {
+        changeDiv.textContent = '';
+      }
+    }
+
+    function submitCart() {
+      if (cart.length === 0) return;
+
+      const method = document.getElementById('payment-method').value;
+      const cashGiven = parseFloat(document.getElementById('cash-given').value);
+
+      if (method === 'cash' && (isNaN(cashGiven) || cashGiven < total)) {
+        document.getElementById('feedback').textContent = 'Cash given is not enough.';
+        return;
+      }
+
+      const items = cart.map(p => ({
+        productCode: p.code,
+        quantity: p.quantity
+      }));
+
+      fetch('http://localhost:3000/sales', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, method, cashGiven })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('feedback').textContent = 'Sale registered successfully!';
+        cart = [];
+        renderCart();
+        document.getElementById('cash-given').value = '';
+        document.getElementById('change').textContent = '';
+      })
+      .catch(() => {
+        document.getElementById('feedback').textContent = 'Error registering sale.';
+      });
+    }
+
+    function clearInputs() {
+      document.getElementById('code').value = '';
+      document.getElementById('name').value = '';
+      document.getElementById('category').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('stock').value = '';
+      document.getElementById('quantity').value = '';
+      currentProduct = null;
+    }
+  </script>
+</body>
+</html>
