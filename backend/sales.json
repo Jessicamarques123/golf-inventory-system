@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "id": 1754596685137,
+    "date": "2025-08-07T19:58:05.137Z",
+    "method": "card",
+    "cashGiven": null,
+    "total": 139,
+    "items": [
+      {
+        "code": "0000",
+        "name": "Cleveland CBX 4 Wedge",
+        "quantity": 1,
+        "price": 139,
+        "subtotal": 139
+      }
+    ]
+  },
+  {
+    "id": 1754597009588,
+    "date": "2025-08-07T20:03:29.588Z",
+    "method": "cash",
+    "cashGiven": 500,
+    "total": 278,
+    "items": [
+      {
+        "code": "0000",
+        "name": "Cleveland CBX 4 Wedge",
+        "quantity": 2,
+        "price": 139,
+        "subtotal": 278
+      }
+    ]
+  },
+  {
+    "id": 1754597020985,
+    "date": "2025-08-07T20:03:40.985Z",
+    "method": "card",
+    "cashGiven": null,
+    "total": 139,
+    "items": [
+      {
+        "code": "0000",
+        "name": "Cleveland CBX 4 Wedge",
+        "quantity": 1,
+        "price": 139,
+        "subtotal": 139
+      }
+    ]
+  },
+  {
+    "id": 1754597258070,
+    "date": "2025-08-07T20:07:38.070Z",
+    "method": "card",
+    "cashGiven": null,
+    "total": 27777500,
+    "items": [
+      {
+        "code": "123456",
+        "name": "teste 3",
+        "quantity": 55555,
+        "price": 500,
+        "subtotal": 27777500
+      }
+    ]
+  }
+]

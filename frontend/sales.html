@@ -86,6 +86,7 @@
       margin-top: 10px;
       text-align: center;
       font-weight: bold;
+      color: red;
     }
 
     #total, #change {
@@ -135,6 +136,8 @@
 
   <button onclick="addToCart()">Add to Cart</button>
 
+  <div id="feedback"></div>
+
   <table>
     <thead>
       <tr>
@@ -165,8 +168,6 @@
   </div>
 
   <button onclick="submitCart()">Submit Sale</button>
-
-  <div id="feedback"></div>
 
   <script>
     let currentProduct = null;
@@ -212,7 +213,18 @@
 
     function addToCart() {
       const quantity = parseInt(document.getElementById('quantity').value);
-      if (!currentProduct || !quantity || quantity <= 0) return;
+      const stock = parseInt(document.getElementById('stock').value);
+      const feedback = document.getElementById('feedback');
+
+      if (!currentProduct || !quantity || quantity <= 0) {
+        feedback.textContent = 'Please enter a valid quantity.';
+        return;
+      }
+
+      if (quantity > stock) {
+        feedback.textContent = 'Not enough stock available.';
+        return;
+      }
 
       cart.push({
         ...currentProduct,
@@ -222,6 +234,7 @@
 
       renderCart();
       clearInputs();
+      feedback.textContent = '';
     }
 
     function renderCart() {

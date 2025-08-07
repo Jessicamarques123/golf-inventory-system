@@ -4,7 +4,7 @@
     "name": "Cleveland CBX 4 Wedge",
     "category": "Club",
     "price": 139,
-    "quantity": 10,
+    "quantity": 8,
     "id": 1753563307137
   },
   {
@@ -36,7 +36,7 @@
     "name": "Golf gloves",
     "category": "acesssories",
     "price": 29,
-    "quantity": 50,
+    "quantity": 52,
     "id": 1753563654595
   },
   {
@@ -80,27 +80,11 @@
     "id": 1753563975251
   },
   {
-    "code": "1234",
-    "name": "teste",
-    "category": "teste",
-    "price": 10,
-    "quantity": 5000,
-    "id": 1753564002696
-  },
-  {
-    "code": "12345",
-    "name": "teste 1",
-    "category": "teste",
-    "price": 20,
-    "quantity": 5000,
-    "id": 1753564021003
-  },
-  {
     "code": "123456",
     "name": "teste 3",
     "category": "teste",
     "price": 500,
-    "quantity": 55555,
+    "quantity": 0,
     "id": 1753564043843
   },
   {
@@ -118,5 +102,29 @@
     "price": 1,
     "quantity": 1,
     "id": 1753567105797
+  },
+  {
+    "code": "12345",
+    "name": "test 1",
+    "category": "Club",
+    "price": 139,
+    "quantity": 11,
+    "id": 1754597666339
+  },
+  {
+    "code": "123",
+    "name": "test 2",
+    "category": "Club",
+    "price": 25,
+    "quantity": 11,
+    "id": 1754597684820
+  },
+  {
+    "code": "12345678",
+    "name": "test 0",
+    "category": "Club",
+    "price": 139,
+    "quantity": 0,
+    "id": 1754597706640
   }
 ]
