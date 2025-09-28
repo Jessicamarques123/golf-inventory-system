@@ -4,7 +4,7 @@
     "name": "Cleveland CBX 4 Wedge",
     "category": "Club",
     "price": 139,
-    "quantity": 8,
+    "quantity": 1,
     "id": 1753563307137
   },
   {
@@ -28,7 +28,7 @@
     "name": "Golf Balls",
     "category": "Balls",
     "price": 49,
-    "quantity": 200,
+    "quantity": 195,
     "id": 1753563624789
   },
   {
@@ -36,7 +36,7 @@
     "name": "Golf gloves",
     "category": "acesssories",
     "price": 29,
-    "quantity": 52,
+    "quantity": 46,
     "id": 1753563654595
   },
   {
@@ -108,7 +108,7 @@
     "name": "test 1",
     "category": "Club",
     "price": 139,
-    "quantity": 11,
+    "quantity": 10,
     "id": 1754597666339
   },
   {
@@ -116,7 +116,7 @@
     "name": "test 2",
     "category": "Club",
     "price": 25,
-    "quantity": 11,
+    "quantity": 9,
     "id": 1754597684820
   },
   {

@@ -13,7 +13,7 @@ app.get('/', (req, res) => res.redirect('/login.html'));
 const DATA_FILE = './inventory.json';
 const SALES_FILE = './sales.json';
 
-// Funções utilitárias
+
 function readInventory() {
   try {
     const data = fs.readFileSync(DATA_FILE, 'utf8');
@@ -50,18 +50,18 @@ function saveSales(data) {
   }
 }
 
-// GET - Lista todos os produtos
+// GET - list of product
 app.get('/products', (req, res) => {
   const products = readInventory();
   res.json(products);
 });
 
-// POST - Adiciona novo produto (verifica código duplicado)
+// POST add new product
 app.post('/products', (req, res) => {
   const products = readInventory();
   const newProduct = req.body;
 
-  // Impede código duplicado
+  // no duplicated code
   if (products.some(p => p.code === newProduct.code)) {
     return res.status(400).json({ error: 'Product code already exists.' });
   }
@@ -72,7 +72,7 @@ app.post('/products', (req, res) => {
   res.status(201).json(newProduct);
 });
 
-// DELETE - Remove produto por ID
+// DELETE - Remove produto per ID
 app.delete('/products/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
@@ -83,7 +83,7 @@ app.delete('/products/:id', (req, res) => {
   res.status(204).send();
 });
 
-// PUT - Atualiza produto (impede alterar para um código já existente)
+// PUT - updated product
 app.put('/products/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
@@ -96,7 +96,7 @@ app.put('/products/:id', (req, res) => {
     return res.status(404).json({ error: 'Product not found' });
   }
 
-  // Se for trocar o código, verifica se já existe em outro produto
+  // if change code check if have another product
   if (
     updatedData.code &&
     products.some(p => p.code === updatedData.code && p.id !== id)
@@ -109,7 +109,7 @@ app.put('/products/:id', (req, res) => {
   res.json(products[index]);
 });
 
-// POST - Registrar venda de múltiplos produtos
+// POST 
 app.post('/sales', (req, res) => {
   const { items, method, cashGiven } = req.body;
 
@@ -134,7 +134,7 @@ app.post('/sales', (req, res) => {
       return res.status(400).json({ error: `Not enough stock for ${product.name}.` });
     }
 
-    // Atualiza estoque
+    // updatd stock
     product.quantity -= quantity;
 
     saleDetails.push({
@@ -150,7 +150,7 @@ app.post('/sales', (req, res) => {
 
   saveInventory(products);
 
-  // Registra a venda
+  // regsister sale
   const newSale = {
     id: Date.now(),
     date: new Date().toISOString(),
@@ -166,7 +166,7 @@ app.post('/sales', (req, res) => {
   res.status(201).json({ message: 'Sale registered.', sale: newSale });
 });
 
-// Inicia servidor
+// start
 app.listen(PORT, () => {
   console.log(`✅ Backend running at http://localhost:${PORT}`);
 });

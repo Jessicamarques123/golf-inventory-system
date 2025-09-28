@@ -1,19 +1,20 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Sales - Golf Store</title>
   <style>
+    /* base layout like before (normal size) */
     body {
       font-family: sans-serif;
       padding: 20px;
       background-color: #f9f9f9;
     }
 
-    h1 {
-      text-align: center;
-    }
+    /* page title centered */
+    h1 { text-align: center; }
 
+    /* back link style (same size as before) */
     a {
       display: inline-block;
       margin-bottom: 20px;
@@ -22,23 +23,27 @@
       font-weight: bold;
     }
 
+    /* labels on their own line */
     label {
       display: block;
       margin-top: 10px;
     }
 
+    /* inputs and selects like before (normal size) */
     input, select {
       width: 100%;
       padding: 8px;
       margin-bottom: 10px;
     }
 
+    /* readonly fields look disabled */
     input[readonly] {
       background-color: #e9e9e9;
       color: #555;
       border: 1px solid #ccc;
     }
 
+    /* buttons like before (normal size) */
     button {
       width: 100%;
       padding: 10px;
@@ -49,10 +54,10 @@
       margin-bottom: 10px;
     }
 
-    button:hover {
-      background-color: #3c5c53;
-    }
+    /* small hover effect */
+    button:hover { background-color: #3c5c53; }
 
+    /* table like before */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -60,16 +65,17 @@
       background-color: #fff;
     }
 
+    /* table cells like before */
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: left;
     }
 
-    th {
-      background-color: #f1f1f1;
-    }
+    /* table header background */
+    th { background-color: #f1f1f1; }
 
+    /* action button inside table (normal size) */
     .btn-action {
       padding: 5px 10px;
       background-color: #2E7D32;
@@ -78,10 +84,9 @@
       cursor: pointer;
     }
 
-    .btn-action:hover {
-      background-color: #3c5c53;
-    }
+    .btn-action:hover { background-color: #3c5c53; }
 
+    /* feedback text */
     #feedback {
       margin-top: 10px;
       text-align: center;
@@ -89,36 +94,120 @@
       color: red;
     }
 
+    /* totals on the right (normal size) */
     #total, #change {
       text-align: right;
       font-weight: bold;
       margin-top: 10px;
     }
 
+    /* top bar layout */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap; /* wrap if screen is small */
     }
 
-    .top-bar a, .top-bar button {
-      width: auto;
+    /* do not stretch these to full width */
+    .top-bar a, .top-bar button { width: auto; }
+
+    /* make keyboard focus very visible (helps seniors) */
+    :focus {
+      outline: 3px solid #000;
+      outline-offset: 2px;
+    }
+
+    /* ===== Senior Mode (bigger size when enabled) ===== */
+    /* when body has this class, everything becomes bigger and easier to tap */
+    body.senior-mode { font-size: 18px; } /* bigger base text */
+
+    body.senior-mode a {
+      padding: 8px 10px;      /* bigger click area for link */
+      border-radius: 8px;
+    }
+
+    body.senior-mode input,
+    body.senior-mode select {
+      padding: 12px;          /* more padding */
+      min-height: 50px;       /* taller touch target */
+      font-size: 1rem;        /* easy to read */
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #fff;
+      box-sizing: border-box;
+    }
+
+    body.senior-mode input[readonly] {
+      background-color: #e9e9e9;
+      color: #555;
+      border: 1px solid #ccc;
+      cursor: not-allowed;
+    }
+
+    body.senior-mode button {
+      padding: 12px 16px;     /* bigger padding */
+      min-height: 56px;       /* bigger touch area */
+      font-size: 1rem;
+      font-weight: 700;       /* bolder text */
+      border-radius: 12px;    /* soft corners */
+    }
+
+    body.senior-mode .btn-action {
+      padding: 10px 16px;     /* bigger action button */
+      min-height: 48px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    body.senior-mode table th,
+    body.senior-mode table td {
+      padding: 14px 12px;     /* more space in table */
+    }
+
+    body.senior-mode #total,
+    body.senior-mode #change {
+      font-size: 1.4rem;      /* totals look bigger */
+      font-weight: 800;
+    }
+
+    /* small helper for screen readers */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
     }
   </style>
 </head>
 <body>
 
+  <!-- top bar with back link, senior mode, and logout -->
   <div class="top-bar">
+    <!-- back to products -->
     <a href="index.html" id="back-link">← Back to Product List</a>
+
+    <!-- senior mode toggle (when checked, bigger UI) -->
+    <label style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="senior-toggle">
+      Senior Mode
+    </label>
+
+    <!-- logout button -->
     <button onclick="logout()">Logout</button>
   </div>
 
+  <!-- page title -->
   <h1>Register Sale</h1>
 
+  <!-- code input -->
   <label for="code">Product Code:</label>
-  <input type="text" id="code" placeholder="Enter product code and press Enter" />
+  <input type="text" id="code" placeholder="Type code and press Enter" />
 
+  <!-- product info (readonly) -->
   <label for="name">Name:</label>
   <input type="text" id="name" readonly />
 
@@ -131,14 +220,18 @@
   <label for="stock">Stock:</label>
   <input type="text" id="stock" readonly />
 
+  <!-- quantity (default set in JS after product found) -->
   <label for="quantity">Quantity:</label>
   <input type="number" id="quantity" min="1" />
 
+  <!-- add to cart -->
   <button onclick="addToCart()">Add to Cart</button>
 
-  <div id="feedback"></div>
+  <!-- feedback message (also read by screen readers) -->
+  <div id="feedback" aria-live="polite"></div>
 
-  <table>
+  <!-- cart table -->
+  <table aria-label="Cart items">
     <thead>
       <tr>
         <th>Code</th>
@@ -153,37 +246,61 @@
     <tbody id="cart-body"></tbody>
   </table>
 
-  <div id="total"></div>
+  <!-- total -->
+  <div id="total" aria-live="polite"></div>
 
+  <!-- payment method -->
   <label for="payment-method">Payment Method:</label>
   <select id="payment-method" onchange="toggleCashFields()">
     <option value="card">Card</option>
     <option value="cash">Cash</option>
   </select>
 
+  <!-- cash fields only when cash is selected -->
   <div id="cash-fields" style="display: none;">
     <label for="cash-given">Cash Given:</label>
     <input type="number" id="cash-given" min="0" oninput="calculateChange()" />
-    <div id="change"></div>
+    <div id="change" aria-live="polite"></div>
   </div>
 
+  <!-- submit sale -->
   <button onclick="submitCart()">Submit Sale</button>
 
   <script>
+    // I store the product that was found by code
     let currentProduct = null;
+
+    // I keep the cart items here
     let cart = [];
+
+    // I keep the total price here
     let total = 0;
 
+    // If user is staff, I hide the back link
     const role = localStorage.getItem('role');
     if (role === 'staff') {
       document.getElementById('back-link').style.display = 'none';
     }
 
+    // logout: clear storage and go to login
     function logout() {
       localStorage.clear();
       window.location.href = "login.html";
     }
 
+    // Senior mode: apply class when checked and remember choice
+    const seniorToggle = document.getElementById('senior-toggle');
+    function applySenior(on) {
+      document.body.classList.toggle('senior-mode', !!on);
+      localStorage.setItem('seniorMode', on ? '1' : '0');
+    }
+    // when user clicks checkbox
+    seniorToggle.addEventListener('change', () => applySenior(seniorToggle.checked));
+    // when page loads, restore previous choice
+    applySenior(localStorage.getItem('seniorMode') === '1');
+    seniorToggle.checked = document.body.classList.contains('senior-mode');
+
+    // when user types code and presses Enter, I try to load the product
     document.getElementById('code').addEventListener('keydown', async function (e) {
       if (e.key === 'Enter') {
         const code = e.target.value.trim();
@@ -192,51 +309,66 @@
         try {
           const res = await fetch('http://localhost:3000/products');
           const products = await res.json();
-          const product = products.find(p => p.code === code);
+          const product = products.find(p => String(p.code) === code);
 
           if (product) {
+            // save product and fill fields
             currentProduct = product;
-            document.getElementById('name').value = product.name;
-            document.getElementById('category').value = product.category;
-            document.getElementById('price').value = product.price.toFixed(2);
+            document.getElementById('name').value = product.name || '';
+            document.getElementById('category').value = product.category || '';
+            document.getElementById('price').value = Number(product.price).toFixed(2);
             document.getElementById('stock').value = product.quantity;
-            document.getElementById('feedback').textContent = '';
+
+            // clear feedback and move to quantity
+            setFeedback('');
+            const qty = document.getElementById('quantity');
+            qty.value = '1';
+            qty.focus();
+            qty.select();
           } else {
+            // if not found
             clearInputs();
-            document.getElementById('feedback').textContent = 'Product not found.';
+            setFeedback('Product not found.');
           }
         } catch (err) {
-          document.getElementById('feedback').textContent = 'Error loading products.';
+          setFeedback('Error loading products.');
         }
       }
     });
 
+    // add current product to cart
     function addToCart() {
-      const quantity = parseInt(document.getElementById('quantity').value);
-      const stock = parseInt(document.getElementById('stock').value);
-      const feedback = document.getElementById('feedback');
+      const qtyField = document.getElementById('quantity');
+      const stockField = document.getElementById('stock');
+      const quantity = parseInt(qtyField.value || '1', 10);
+      const stock = parseInt(stockField.value || '0', 10);
 
       if (!currentProduct || !quantity || quantity <= 0) {
-        feedback.textContent = 'Please enter a valid quantity.';
+        setFeedback('Please enter a valid quantity.');
         return;
       }
 
       if (quantity > stock) {
-        feedback.textContent = 'Not enough stock available.';
+        setFeedback('Not enough stock available.');
         return;
       }
+
+      const price = Number(currentProduct.price) || 0;
 
       cart.push({
         ...currentProduct,
         quantity,
-        subtotal: currentProduct.price * quantity
+        subtotal: price * quantity
       });
 
       renderCart();
       clearInputs();
-      feedback.textContent = '';
+      setFeedback('Item added to cart.');
+      // focus code again to speed next scan
+      document.getElementById('code').focus();
     }
 
+    // render table and totals
     function renderCart() {
       const tbody = document.getElementById('cart-body');
       const totalDiv = document.getElementById('total');
@@ -250,28 +382,45 @@
           <td>${item.code}</td>
           <td>${item.name}</td>
           <td>${item.category}</td>
-          <td>${item.price.toFixed(2)}</td>
+          <td>${Number(item.price).toFixed(2)}</td>
           <td>${item.quantity}</td>
           <td>${(item.subtotal).toFixed(2)}</td>
           <td><button class="btn-action" onclick="removeItem(${index})">Remove</button></td>
         `;
         tbody.appendChild(row);
       });
+
       totalDiv.textContent = 'Total: €' + total.toFixed(2);
-      calculateChange();
+      calculateChange(); // update change if needed
     }
 
+    // remove one item
     function removeItem(index) {
       cart.splice(index, 1);
       renderCart();
+      setFeedback('Item removed.');
     }
 
+    // show cash fields only for cash method
     function toggleCashFields() {
       const method = document.getElementById('payment-method').value;
       const cashFields = document.getElementById('cash-fields');
-      cashFields.style.display = method === 'cash' ? 'block' : 'none';
+      const cashGiven = document.getElementById('cash-given');
+      const changeDiv = document.getElementById('change');
+
+      if (method === 'cash') {
+        cashFields.style.display = 'block';
+        cashGiven.value = '';
+        changeDiv.textContent = '';
+        cashGiven.focus();
+      } else {
+        cashFields.style.display = 'none';
+        cashGiven.value = '';
+        changeDiv.textContent = '';
+      }
     }
 
+    // calculate change for cash payment
     function calculateChange() {
       const method = document.getElementById('payment-method').value;
       if (method !== 'cash') return;
@@ -287,14 +436,18 @@
       }
     }
 
+    // submit sale to server
     function submitCart() {
-      if (cart.length === 0) return;
+      if (cart.length === 0) {
+        setFeedback('Cart is empty.');
+        return;
+      }
 
       const method = document.getElementById('payment-method').value;
       const cashGiven = parseFloat(document.getElementById('cash-given').value);
 
       if (method === 'cash' && (isNaN(cashGiven) || cashGiven < total)) {
-        document.getElementById('feedback').textContent = 'Cash given is not enough.';
+        setFeedback('Cash given is not enough.');
         return;
       }
 
@@ -310,17 +463,18 @@
       })
       .then(res => res.json())
       .then(data => {
-        document.getElementById('feedback').textContent = 'Sale registered successfully!';
+        setFeedback('Sale registered successfully!');
         cart = [];
         renderCart();
         document.getElementById('cash-given').value = '';
         document.getElementById('change').textContent = '';
       })
       .catch(() => {
-        document.getElementById('feedback').textContent = 'Error registering sale.';
+        setFeedback('Error registering sale.');
       });
     }
 
+    // clear product fields
     function clearInputs() {
       document.getElementById('code').value = '';
       document.getElementById('name').value = '';
@@ -330,6 +484,31 @@
       document.getElementById('quantity').value = '';
       currentProduct = null;
     }
+
+    // show feedback text
+    function setFeedback(msg) {
+      const box = document.getElementById('feedback');
+      box.textContent = msg || '';
+    }
+
+    // small keyboard shortcuts:
+    // F2 toggles senior mode, F10 submits, Esc clears fields
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'F2') {
+        e.preventDefault();
+        seniorToggle.checked = !seniorToggle.checked;
+        applySenior(seniorToggle.checked);
+      }
+      if (e.key === 'F10') {
+        e.preventDefault();
+        submitCart();
+      }
+      if (e.key === 'Escape') {
+        clearInputs();
+        setFeedback('');
+        document.getElementById('code').focus();
+      }
+    });
   </script>
 </body>
 </html>
